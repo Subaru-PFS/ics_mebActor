@@ -4,8 +4,6 @@ from builtins import object
 import logging
 import requests
 
-PW_HOST = "10.1.120.91"
-PW_USER = "admin"
 PW_PASS = "12345678"
 
 class Power(object):
@@ -18,13 +16,15 @@ class Power(object):
 
     def __init__(self, actor, name,
                  logLevel=logging.INFO,
-                 host=PW_HOST, user=PW_USER, password=PW_PASS):
+                 host=None, user=None, password=PW_PASS):
         """ connect to IP power 9858DX """
 
         self.actor = actor
-        
-        self.host = host
-        self.user = user
+
+        self.host = host if host is not None else self.actor.config.get(self,name,
+                                                                        'host')
+        self.user = user if user is not None else self.actor.config.get(self,name,
+                                                                        'user')
         self.password = password
         self.url = 'http://' + user + ':' + password + '@' + host + '/set.cmd?cmd='
 
