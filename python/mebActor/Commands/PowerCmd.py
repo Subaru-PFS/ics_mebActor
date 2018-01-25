@@ -17,9 +17,9 @@ class PowerCmd(object):
         # passed a single argument, the parsed and typed command.
         #
         self.vocab = [
-            ('raw', '@raw', self.raw),
+            ('power', '@raw', self.raw),
             ('power', '@(on|off|bounce) @(mc|stf|cisco|pc)', self.setPower),
-            ('status', '', self.status),
+            ('power', 'status', self.status),
         ]
 
         # Define typed command arguments for the above commands.
