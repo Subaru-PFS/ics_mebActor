@@ -5,7 +5,7 @@ from twisted.internet import reactor
 
 import actorcore.ICC
 
-class OurActor(actorcore.Actor.ICC):
+class OurActor(actorcore.ICC.ICC):
     def __init__(self, name,
                  productName=None, configFile=None,
                  modelNames=(),
