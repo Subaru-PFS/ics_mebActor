@@ -42,7 +42,7 @@ class PowerCmd(object):
         status = self.powerDev.query()
 
         # You need to format this as keywords...
-        cmd.inform('text="status: %s"' % (status))
+        cmd.inform('power=%s' % ','.join(["%d" % s for s in status]))
 
         if doFinish:
             cmd.finish()

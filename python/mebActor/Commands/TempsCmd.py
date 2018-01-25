@@ -3,7 +3,7 @@
 from builtins import object
 import opscore.protocols.keys as keys
 
-class TempCmd(object):
+class TempsCmd(object):
 
     def __init__(self, actor):
         # This lets us access the rest of the actor.

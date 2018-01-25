@@ -69,7 +69,7 @@ class power(object):
         idx = r.text.find('p61') + 4
         state = []
         for n in range(4):
-            st = 0 if r.text[idx+n*7]=='0' else 1
+            st = False if r.text[idx+n*7]=='0' else True
             state.append(st)
         return state
 
