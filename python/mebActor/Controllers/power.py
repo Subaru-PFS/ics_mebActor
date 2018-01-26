@@ -16,7 +16,7 @@ class power(object):
 
     def __init__(self, actor, name,
                  logLevel=logging.INFO,
-                 host=None, user=None, password=PW_PASS):
+                 host=None, user=None, password=None):
         """ connect to IP power 9858DX """
 
         self.name = name
@@ -27,8 +27,9 @@ class power(object):
             host = self.actor.config.get(self.name, 'host')
         if user is None:
             user = self.actor.config.get(self.name, 'user')
+        if password is None:
+            password = self.actor.config.get(self.name, 'password')
 
-        self.password = password
         self.url = 'http://' + user + ':' + password + '@' + host + '/set.cmd?cmd='
         
     def _deviceId(self, idString):
@@ -80,6 +81,7 @@ class power(object):
 
     def start(self):
         pass
+
     def stop(self):
         pass
 
