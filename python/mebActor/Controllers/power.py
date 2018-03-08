@@ -9,10 +9,10 @@ PW_PASS = "12345678"
 class power(object):
     """ *MCS power module* """
 
-    deviceIds = {'MC':0, '0':0, 0:0,
-                 'STF':1, '1':1, 1:1,
-                 'CISCO':2, '2':2, 2:2,
-                 'PC':3, '3':3, 3:3}
+    deviceIds = {'mc':0, '0':0, 0:0,
+                 'stf':1, '1':1, 1:1,
+                 'cisco':2, '2':2, 2:2,
+                 'pc':3, '3':3, 3:3}
 
     def __init__(self, actor, name,
                  logLevel=logging.INFO,
@@ -31,38 +31,38 @@ class power(object):
             password = self.actor.config.get(self.name, 'password')
 
         self.url = 'http://' + user + ':' + password + '@' + host + '/set.cmd?cmd='
-        
+
     def _deviceId(self, idString):
             # Let failures blow up
             return self.deviceIds[idString.upper()] + 1
 
     def _sendReq(self, reqStr):
         """ Actually send the request. """
-        
+
         req = self.url + reqStr
         self.logger.info('sent: %s', req)
         r = requests.get(req)
         self.logger.debug('recv: %s', r)
 
         return r
-        
+
     def set_power(self, device, powerOn):
         """ set the power for a device """
 
-        s = self.deviceIds[device] + '='
+        s = str(self.deviceIds[device] + 1) + '='
         s += '1' if powerOn else '0'
         r = self._sendReq('setpower&p6' + s)
 
         return r
 
-    def pulse_power(self, device, duration):
+    def bounce_power(self, device):
         """ turn off and on the power for a period """
 
-        s = self.deviceIds[device] + '=' + str(duration)
-        r = self._send('setpowercycle&p6' + s)
+        s = str(self.deviceIds[device] + 1) + '=0'
+        r = self._sendReq('setpowercycle&p6' + s)
 
         return r
-    
+
     def query(self):
         """ query current status """
 
@@ -77,11 +77,10 @@ class power(object):
     def raw(self, cmdStr):
         """ Send an arbitrary command URL to the controller. """
 
-        return self.sendReq(cmdStr)
+        return self._sendReq(cmdStr).text
 
     def start(self):
         pass
 
     def stop(self):
         pass
-

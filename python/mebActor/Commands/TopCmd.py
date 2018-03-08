@@ -23,7 +23,7 @@ class TopCmd(object):
         ]
 
         # Define typed command arguments for the above commands.
-        self.keys = keys.KeysDictionary("mcs_mcs", (1, 1),
+        self.keys = keys.KeysDictionary("meb_meb", (1, 1),
                                         keys.Key("controllers", types.String()*(1,None),
                                                  help='the names of 1 or more controllers to load'),
                                         keys.Key("period", types.Int(),

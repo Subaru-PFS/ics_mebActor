@@ -5,6 +5,7 @@ import sdss3tools
 import os
 
 sdss3tools.setup(
-    description = "Toy SDSS-3 actor.",
-    )
+    description = "MCS Electric Box",
+    name = "ics_mebActor",
+)
 

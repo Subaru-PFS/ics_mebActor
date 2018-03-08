@@ -3,7 +3,7 @@
 from builtins import object
 import opscore.protocols.keys as keys
 
-class TempsCmd(object):
+class FlowCmd(object):
 
     def __init__(self, actor):
         # This lets us access the rest of the actor.
@@ -15,25 +15,24 @@ class TempsCmd(object):
         # passed a single argument, the parsed and typed command.
         #
         self.vocab = [
-            ('temps', 'status', self.status),
+            ('flow', 'status', self.status),
         ]
 
         # Define typed command arguments for the above commands.
-        self.keys = keys.KeysDictionary("meb_temps", (1, 1),
+        self.keys = keys.KeysDictionary("meb_flow", (1, 1),
                                         )
     @property
-    def tempsDev(self):
-        return self.actor.controllers['temps']
+    def flowDev(self):
+        return self.actor.controllers['flow']
 
     def status(self, cmd, doFinish=True):
-        """Report camera status and actor version. """
+        """Report status """
 
-        status = self.tempsDev.query()
+        status = self.flowDev.query()
 
         # You need to format this as keywords...
-        temps = ','.join(["%0.2f" % s for s in status])
-        cmd.inform('temps=%s' % (temps))
+        flow = '%0.2f' % status['FlowMeter']
+        cmd.inform('flow=%s' % (flow))
 
         if doFinish:
             cmd.finish()
-

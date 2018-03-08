@@ -61,6 +61,7 @@ class OurActor(actorcore.ICC.ICC):
         else:
             cmd.warn('text="adjusted %s loop to %gs"' % (controller, self.monitors[controller]))
         #
+
 # To work
 def main():
     theActor = OurActor('meb', productName='mebActor')

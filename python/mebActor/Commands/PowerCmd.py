@@ -4,6 +4,7 @@ from builtins import object
 import opscore.protocols.keys as keys
 import opscore.protocols.types as types
 from opscore.utility.qstr import qstr
+from twisted.internet import reactor
 
 class PowerCmd(object):
 
@@ -57,12 +58,9 @@ class PowerCmd(object):
                 break
 
         if 'bounce' in cmdKeys:
-            duration = cmdKeys['duration'].values[0]
-            self.powerDev.pulse_power(deviceName, duration)
+            self.powerDev.bounce_power(deviceName)
+            reactor.callLater(3.0, self.status, cmd)
         else:
             powerOn = 'on' in cmdKeys
             self.powerDev.set_power(deviceName, powerOn)
-
-        self.status(cmd)
-
-
+            self.status(cmd)
