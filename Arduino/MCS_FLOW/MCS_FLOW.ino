@@ -7,7 +7,7 @@
 */
 
 #define BOOTLOADER //Comment this line if you are not using bootloader
-#define DEBUG   //Uncomment this line for debug output
+//#define DEBUG   //Uncomment this line for debug output
 #ifdef DEBUG    //Macros are usually in all capital letters.
   #define DPRINT(...)    Serial.print(__VA_ARGS__)     //DPRINT is a macro, debug print
   #define DPRINTLN(...)  Serial.println(__VA_ARGS__)   //DPRINTLN is a macro, debug print with new line
@@ -27,8 +27,8 @@
 #include <Flash.h>
 #include <avr/wdt.h>
 
-byte mac[] = { 0x90, 0xA2, 0xDA, 0x0F, 0x87, 0x03 };
-IPAddress ip(10, 1, 120, 12);
+byte mac[] = { 0x90, 0xA2, 0xDA, 0x0F, 0x87, 0x07 };
+IPAddress ip(10, 1, 164, 210);
 
 // telnet defaults to port 23
 
