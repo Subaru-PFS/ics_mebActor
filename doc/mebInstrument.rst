@@ -11,7 +11,7 @@ Hardware
 **Liquid Flowmeter**
   - http://www.omega.com/pptst/FPR301_302_303_304.html
 **Arduino ethernet board**
-  - This board is used to read the liquid flowmeter
+  This board is used to read the liquid flowmeter
 **Aviosys IP Power 9858DX**
   - http://www.aviosys.com/downloads/manuals/power/9858DX-V1.0B.pdf
 **USB microphone with USB sound card**
@@ -51,8 +51,6 @@ control by e-mail without doing port forwarding / port mapping and search the ot
 +---------+------------------------------+---------+
 | POWER 4 | PC, Cooling fans             | Off     |
 +---------+------------------------------+---------+
-
-http://admin:12345678@10.1.164.209/set.cmd?cmd=
 
 **To get the status of power on/ off: getpower**
 
