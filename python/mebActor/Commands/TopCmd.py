@@ -38,7 +38,7 @@ class TopCmd(object):
         cmd.finish("text='Present and (probably) well'")
 
     def status(self, cmd):
-        """Report camera status and actor version. """
+        """Report actor status and version."""
 
         self.actor.sendVersionKey(cmd)
         

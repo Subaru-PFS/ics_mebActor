@@ -8,7 +8,6 @@ Hardware
 **ADAM-6015 (x1) with RTD sensors (1x7)**
   - http://www.omega.com/pptst/RTD-830.html
   - http://buy.advantech.com/Remote-I-O-Modules/Ethernet-I-O-Modules-Analog-IO-Modules/model-ADAM-6015-BE.htm?country=USA&token=636372260221909922&f=ATW&f=AUS
-
 **Liquid Flowmeter**
   - http://www.omega.com/pptst/FPR301_302_303_304.html
 **Arduino ethernet board**
@@ -24,26 +23,34 @@ Hardware
 Aviosys IP Power 9858DX
 -----------------------
 
-IP Power 9858DX is a new generation of the Power Distribution Unit (PDU) & Remote Power Control (RPC) system. It's able to connect to WiFi network with WPS function for easy & quick set up a device to user’s wireless home/office network and control in the network.
+IP Power 9858DX is a new generation of the Power Distribution Unit (PDU) & Remote Power Control (RPC) system. It's able
+to connect to WiFi network with WPS function for easy & quick set up a device to user’s wireless home/office network
+and control in the network.
 
-With embedded web server and HTTPS protection , 9858DX supports higher grade security as working on Internet. User can control power easily and more safely through the web browser on Windows PC or on Smartphone like Internet Explorer (IE) , Firefox , Google Chrome , Safari ( iOS ) and Android system.
+With embedded web server and HTTPS protection , 9858DX supports higher grade security as working on Internet. User can
+control power easily and more safely through the web browser on Windows PC or on Smartphone like Internet Explorer (IE)
+, Firefox , Google Chrome , Safari ( iOS ) and Android system.
 
-9858DX allows user to remote control power up to 4 separate devices on/off via network . As support SSL & SNMP, user can use public email like Gmail / Hotmail / Yahoo Mail to get the email as the ON/OFF status change . User can also control by e-mail without doing port forwarding / port mapping and search the other IP Device in webpage directly.
+9858DX allows user to remote control power up to 4 separate devices on/off via network . As support SSL & SNMP, user
+can use public email like Gmail / Hotmail / Yahoo Mail to get the email as the ON/OFF status change . User can also
+control by e-mail without doing port forwarding / port mapping and search the other IP Device in webpage directly.
 
 :IP: 10.1.164.209
 :MAC: 00:98:58:00:14:f6
 :user: admin
 :password: 12345678
 
-+---------+------------------------------+
-| POWER 1 | Metrology camera             |
-+---------+------------------------------+
-| POWER 2 | Shutter, Adam6015, Flowmeter |
-+---------+------------------------------+
-| POWER 3 | Cisco 2960CG                 |
-+---------+------------------------------+
-| POWER 4 | PC, Cooling fans             |
-+---------+------------------------------+
++---------+------------------------------+---------+
+| Output  | Devices                      | Default |
++=========+==============================+=========+
+| POWER 1 | Metrology camera             | Off     |
++---------+------------------------------+---------+
+| POWER 2 | Shutter, Adam6015, Flowmeter | Off     |
++---------+------------------------------+---------+
+| POWER 3 | Cisco 2960CG                 | On      |
++---------+------------------------------+---------+
+| POWER 4 | PC, Cooling fans             | Off     |
++---------+------------------------------+---------+
 
 http://admin:12345678@10.1.164.209/set.cmd?cmd=
 
@@ -143,12 +150,33 @@ There are two ways to read the data:
 Adam 6015
 ---------
 
-The ADAM-6015 is a 16-bit, 7-channel RTD input module that provides programmable input ranges on all channels. It accepts various RTD inputs (PT100, PT1000, Balco 500 & Ni) and provides data to the host computer in engineering units (°C). In order to satisfy various temperature requirements in one module, each analog channel is allowed to configure an individual range for several applications.
+The ADAM-6015 is a 16-bit, 7-channel RTD input module that provides programmable input ranges
+on all channels. It accepts various RTD inputs (PT100, PT1000, Balco 500 & Ni) and provides data
+to the host computer in engineering units (°C). In order to satisfy various temperature requirements
+in one module, each analog channel is allowed to configure an individual range for several applications.
 
-There are total three such modules inside EBox, so we have total 3x7=21 RTD sensors. This module supports Modbus/TCP Protocol and following is the function to read RTD sensors. A python module has been built to get the temperature readings. It doesn’t support DHCP and SNMP protocols.
+There is only one ADAM modules inside EBox and total 7 RTD sensors. This module supports Modbus/TCP Protocol
+and following is the function to read RTD sensors. A python module has been built to get the temperature readings.
+It doesn’t support DHCP and SNMP protocols.
 
 :IP: 10.1.164.211
 :MAC: 00:d0:c9:f4:2a:5f
+
++-------+-------------------+
+| RTD-1 | Top Plate         |
++-------+-------------------+
+| RTD-2 | Carbon fiber tube |
++-------+-------------------+
+| RTD-3 | Primary mirror    |
++-------+-------------------+
+| RTD-4 | Cover panel       |
++-------+-------------------+
+| RTD-5 | Coolant water in  |
++-------+-------------------+
+| RTD-6 | Coolant water out |
++-------+-------------------+
+| RTD-7 | Electronic rack   |
++-------+-------------------+
 
 Function Code 03/04
   The function code 03 or 04 is used to read the binary contents of input registers
@@ -161,7 +189,9 @@ Function Code 03/04
 
   Example: Read Analog inputs #1 and #2 in addresses 40001 to 40002 as floating point value from ADAM-6017 module
 
-  01 04 00 01 00 02
+  ::
+
+    01 04 00 01 00 02
 
   Response message format for function code 03 or 04:
 
@@ -171,12 +201,14 @@ Function Code 03/04
 
   Example: Analog input #1 and #2 as floating point values where AI#1=100.0 and AI#2=55.32
 
-  01 04 08 42 C8 00 00 47 AE 42 5D
+  ::
+
+    01 04 08 42 C8 00 00 47 AE 42 5D
 
 USB microphone
 --------------
 
-This device can be used directly in Ubuntu 14.04. In the following we demonstrate how to use ALSA utility to record sound.
+This device is supported in Ubuntu 14.04. In the following we demonstrate how to use ALSA utility to record sound.
 
 ::
 
@@ -210,4 +242,3 @@ Cisco Catalyst 2960CG switch
 :IP: 10.1.164.208
 :MAC: a0:55:4f:a8:b1:40
 :password: Cisco
-

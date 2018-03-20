@@ -31,14 +31,14 @@ class PowerCmd(object):
         return self.actor.controllers['power']
 
     def raw(self, cmd):
-        """ Send a raw command to the power controller """
+        """ Send a raw command to the power controller."""
 
         cmdTxt = cmd.cmd.keywords['raw'].values[0]
         ret = self.powerDev.raw(cmdTxt)
         cmd.finish('text="raw return: %s"' % (ret))
 
     def status(self, cmd, doFinish=True):
-        """Report camera status and actor version. """
+        """Report current power status."""
 
         status = self.powerDev.query()
 
@@ -49,7 +49,7 @@ class PowerCmd(object):
             cmd.finish()
 
     def setPower(self, cmd):
-        """ Set or bounce power to a device """
+        """ Set or bounce power to a device."""
 
         cmdKeys = cmd.cmd.keywords
         for name in 'mc', 'stf', 'cisco', 'pc':
