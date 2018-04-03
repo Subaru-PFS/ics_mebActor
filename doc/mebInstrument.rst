@@ -74,7 +74,7 @@ Example : Turn on POWER1 and POWER2 and turn off POWER3
 
 ::
 
-  http://192.168.1.18/set.cmd?cmd=setpower&p61=1&p62=1&p63=0
+  http://admin:12345678@10.1.164.209/set.cmd?cmd=setpower&p61=1&p62=1&p63=0
 
 System return:
 
@@ -90,7 +90,7 @@ For example :
 
 ::
 
-  http://192.168.1.18/set.cmd?cmd=setpowercycle&p61=5&p62=2&p63=4
+  http://admin:12345678@10.1.164.209/set.cmd?cmd=setpowercycle&p61=5&p62=2&p63=4
 
 System return:
 
@@ -115,7 +115,7 @@ There are two ways to read the data:
 
 ::
 
-  > telnet 10.1.120.12
+  > telnet 10.1.164.210
   :Q
   Flow = 0 Hz
   :X
@@ -126,7 +126,7 @@ There are two ways to read the data:
 
 ::
 
-  > snmpwalk -c public -v 1 10.1.120.12 1.3.6.1.4.1.50399
+  > snmpwalk -c public -v 1 10.1.164.210 1.3.6.1.4.1.50399
   SNMPv2-SMI::enterprises.50399.1.0 = STRING: "Subaru MCS telemmetry sensors"
   SNMPv2-SMI::enterprises.50399.2.0 = STRING: "1.3.6.1.4.1.50399"
   SNMPv2-SMI::enterprises.50399.3.0 = Timeticks: (6500) 0:01:05.00
@@ -139,10 +139,10 @@ There are two ways to read the data:
   SNMPv2-SMI::enterprises.50399.8.0 = INTEGER: 7
   End of MIB
 
-  > snmpget -c public -v 1 10.1.120.12 1.3.6.1.4.1.50399.1.0
+  > snmpget -c public -v 1 10.1.164.210 1.3.6.1.4.1.50399.1.0
   SNMPv2-SMI::enterprises.50399.1.0 = STRING: “Subaru MCS telemmetry sensors"
 
-  > snmpgetnext -c public -v 1 10.1.120.12 1.3.6.1.4.1.50399.6.0
+  > snmpgetnext -c public -v 1 10.1.164.210 1.3.6.1.4.1.50399.6.0
   SNMPv2-SMI::enterprises.50399.7.0 = INTEGER: 0
 
 Adam 6015

@@ -41,6 +41,7 @@ unsigned long last_active;
 
 int flowPin = 2;
 unsigned long duration;
+#define SAMPLES 3
 
 //
 // tkmib - linux mib browser
@@ -79,7 +80,7 @@ static uint32_t locUpTime           = 0;                                // read-
 static char locContact[20]          = "ChihYi Wen";                     // should be stored/read from EEPROM - read/write (not done for simplicity)
 static char locName[20]             = "Telemetry sensors";              // should be stored/read from EEPROM - read/write (not done for simplicity)
 static char locLocation[20]         = "Subaru";                         // should be stored/read from EEPROM - read/write (not done for simplicity)
-static uint32_t lastUpdateTime      = 0;
+//static uint32_t lastUpdateTime      = 0;
 static int32_t locServices          = 7;
 
 uint32_t prevMillis = millis();
@@ -257,13 +258,25 @@ void pduReceived()
         pdu.error = SNMP_ERR_READ_ONLY;
       } else {
         // response packet from get-request
-        duration = pulseIn(flowPin, HIGH);
-        int hz100;
-        if( duration != 0 ) {
-          hz100 = 100 / duration;
-        } else {
-          hz100 = 0;
+        unsigned long t_hi, t_low, t_in;
+        double hz;
+        int i, hz100;
+        t_hi = 0;
+        t_low = 0;
+        for (i=0; i<SAMPLES; i++) {
+          t_in = pulseIn(flowPin, HIGH);
+          if (t_in == 0) break;
+          t_hi += t_in;
+          t_in = pulseIn(flowPin, LOW);
+          if (t_in == 0) break;
+          t_low += t_in;
         }
+        if (i < SAMPLES) {
+          hz = 0.0;
+        } else {
+          hz = 1000000.0 * SAMPLES / (t_hi + t_low);
+        }
+        hz100 = (int)(100 * hz);
         status = pdu.VALUE.encode(SNMP_SYNTAX_INT, hz100);
         pdu.type = SNMP_PDU_RESPONSE;
         pdu.error = status;
@@ -295,19 +308,33 @@ void pduReceived()
   //
 }
 
-void doFlow()
-{
-  char str[30];
+void doFlow() {
+  char str[30], hzstr[16];
+  unsigned long t_hi, t_low, t_in;
+  double hz;
+  int i;
 
-  duration = pulseIn(flowPin, HIGH);
-  unsigned long hz;
-  if( duration != 0 ) {
-    hz = 1/ duration;
-    sprintf(str, "Flow = %lu Hz\n", hz);
-  } else {
-    sprintf(str, "Flow = 0 Hz\n");
+  t_hi = 0;
+  t_low = 0;
+  for (i=0; i<SAMPLES; i++) {
+    t_in = pulseIn(flowPin, HIGH);
+    if (t_in == 0) break;
+    t_hi += t_in;
+    t_in = pulseIn(flowPin, LOW);
+    if (t_in == 0) break;
+    t_low += t_in;
   }
-  g_client.write(str);
+  if (i < SAMPLES) {
+    sprintf(str, "Flow = 0 Hz\n");
+    g_client.write(str);
+  } else {
+    hz = 1000000.0 * SAMPLES / (t_hi + t_low);
+    dtostrf(hz, 6, 1, hzstr);
+    sprintf(str, "Flow = %s Hz\n", hzstr);
+    g_client.write(str);
+    sprintf(str, "High = %lu us, Low = %lu us\n", t_hi/3, t_low/3);
+    g_client.write(str);
+  }
 }
 
 void parsing()
