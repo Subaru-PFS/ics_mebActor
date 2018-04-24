@@ -239,4 +239,4 @@ Cisco Catalyst 2960CG switch
 
 :IP: 10.1.164.208
 :MAC: a0:55:4f:a8:b1:40
-:password: Cisco
+:password: (Subaru Computer Devision takes control now)
