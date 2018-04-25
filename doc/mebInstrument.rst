@@ -74,7 +74,7 @@ Example : Turn on POWER1 and POWER2 and turn off POWER3
 
 ::
 
-  http://admin:12345678@10.1.164.209/set.cmd?cmd=setpower&p61=1&p62=1&p63=0
+  http://admin:12345678@133.40.164.212/set.cmd?cmd=setpower&p61=1&p62=1&p63=0
 
 System return:
 
@@ -90,7 +90,7 @@ For example :
 
 ::
 
-  http://admin:12345678@10.1.164.209/set.cmd?cmd=setpowercycle&p61=5&p62=2&p63=4
+  http://admin:12345678@133.40.164.212/set.cmd?cmd=setpowercycle&p61=5&p62=2&p63=4
 
 System return:
 
