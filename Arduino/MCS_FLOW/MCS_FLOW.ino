@@ -28,7 +28,8 @@
 #include <avr/wdt.h>
 
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x0F, 0x87, 0x07 };
-IPAddress ip(10, 1, 164, 210);
+// IPAddress ip(10, 1, 164, 210);
+IPAddress ip(133, 40, 164, 209);
 
 // telnet defaults to port 23
 
