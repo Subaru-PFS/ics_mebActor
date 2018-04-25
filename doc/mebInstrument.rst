@@ -35,7 +35,7 @@ control power easily and more safely through the web browser on Windows PC or on
 can use public email like Gmail / Hotmail / Yahoo Mail to get the email as the ON/OFF status change . User can also
 control by e-mail without doing port forwarding / port mapping and search the other IP Device in webpage directly.
 
-:IP: 10.1.164.209
+:IP: 133.40.164.212
 :MAC: 00:98:58:00:14:f6
 :user: admin
 :password: 12345678
@@ -105,7 +105,7 @@ Arduino ethernet board
 
 This board collect the data from flow meter. We can program it to use DHCP or static IP.
 
-:IP: 10.1.164.210
+:IP: 133.40.164.209
 :MAC: 90:a2:da:0f:87:07
 
 There are two ways to read the data:
@@ -115,7 +115,7 @@ There are two ways to read the data:
 
 ::
 
-  > telnet 10.1.164.210
+  > telnet 133.40.164.209
   :Q
   Flow = 0 Hz
   :X
@@ -157,7 +157,7 @@ There is only one ADAM modules inside EBox and total 7 RTD sensors. This module 
 and following is the function to read RTD sensors. A python module has been built to get the temperature readings.
 It doesn’t support DHCP and SNMP protocols.
 
-:IP: 10.1.164.211
+:IP: 133.40.164.210
 :MAC: 00:d0:c9:f4:2a:5f
 
 +-------+-------------------+
@@ -237,6 +237,6 @@ This device is supported in Ubuntu 14.04. In the following we demonstrate how to
 Cisco Catalyst 2960CG switch
 ----------------------------
 
-:IP: 10.1.164.208
+:IP: 133.40.164.9
 :MAC: a0:55:4f:a8:b1:40
 :password: (Subaru Computer Devision takes control now)
