@@ -38,11 +38,13 @@ EthernetClient g_client;
 boolean connected = false;
 String g_strcmd = "";
 unsigned long last_active;
-#define TELNET_TIMEOUT 10000
 
 int flowPin = 2;
-unsigned long duration;
-#define SAMPLES 3
+
+#define TELNET_TIMEOUT 15000
+#define SAMPLES 1
+#define FLOW_TIMEOUT 3000000
+#define FLOW_RATIO 1.08      // Rough estimation for T_period / T_low
 
 //
 // tkmib - linux mib browser
@@ -259,26 +261,7 @@ void pduReceived()
         pdu.error = SNMP_ERR_READ_ONLY;
       } else {
         // response packet from get-request
-        unsigned long t_hi, t_low, t_in;
-        double hz;
-        int i, hz100;
-        t_hi = 0;
-        t_low = 0;
-        for (i=0; i<SAMPLES; i++) {
-          t_in = pulseIn(flowPin, HIGH);
-          if (t_in == 0) break;
-          t_hi += t_in;
-          t_in = pulseIn(flowPin, LOW);
-          if (t_in == 0) break;
-          t_low += t_in;
-        }
-        if (i < SAMPLES) {
-          hz = 0.0;
-        } else {
-          hz = 1000000.0 * SAMPLES / (t_hi + t_low);
-        }
-        hz100 = (int)(100 * hz);
-        status = pdu.VALUE.encode(SNMP_SYNTAX_INT, hz100);
+        status = pdu.VALUE.encode(SNMP_SYNTAX_INT, (int) (100 * getFlow()));
         pdu.type = SNMP_PDU_RESPONSE;
         pdu.error = status;
       }
@@ -309,33 +292,33 @@ void pduReceived()
   //
 }
 
-void doFlow() {
-  char str[30], hzstr[16];
-  unsigned long t_hi, t_low, t_in;
-  double hz;
+double getFlow()
+{
+  unsigned long t_in, t_low;
   int i;
 
-  t_hi = 0;
   t_low = 0;
   for (i=0; i<SAMPLES; i++) {
-    t_in = pulseIn(flowPin, HIGH);
-    if (t_in == 0) break;
-    t_hi += t_in;
-    t_in = pulseIn(flowPin, LOW);
+    t_in = pulseIn(flowPin, LOW, FLOW_TIMEOUT);
     if (t_in == 0) break;
     t_low += t_in;
   }
   if (i < SAMPLES) {
-    sprintf(str, "Flow = 0 Hz\n");
-    g_client.write(str);
+    return 0.0;
   } else {
-    hz = 1000000.0 * SAMPLES / (t_hi + t_low);
-    dtostrf(hz, 6, 1, hzstr);
-    sprintf(str, "Flow = %s Hz\n", hzstr);
-    g_client.write(str);
-    sprintf(str, "High = %lu us, Low = %lu us\n", t_hi/3, t_low/3);
-    g_client.write(str);
+    return 1000000.0 * SAMPLES / (t_low * FLOW_RATIO);
   }
+}
+
+void doFlow()
+{
+  char str[30], hzstr[16];
+  double hz;
+
+  hz = getFlow();
+  dtostrf(hz, 6, 1, hzstr);
+  sprintf(str, "Flow = %s Hz\n", hzstr);
+  g_client.write(str);
 }
 
 void parsing()
@@ -345,7 +328,7 @@ void parsing()
     doFlow();
   } else if (g_strcmd == "RST") {
     // command to test reset function
-    delay(5000);
+    delay(15000);
   } else {
     sprintf(str, "unknown\n");
     g_client.write("unknown\n");
@@ -387,7 +370,7 @@ void setup()
   if ( api_status == SNMP_API_STAT_SUCCESS ) {
     Agentuino.onPduReceive(pduReceived);
     delay(10);
-    wdt_enable(WDTO_4S);
+    wdt_enable(WDTO_8S);
   } else {
     DPRINTLN("Failed to start SNMP server");
   }

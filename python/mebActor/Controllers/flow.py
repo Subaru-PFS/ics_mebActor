@@ -3,7 +3,7 @@ from builtins import object
 import logging
 import telnetlib
 
-TIME_OUT = 3
+TIME_OUT = 15
 
 class flow(object):
     """ MCS E-box flow meter """
