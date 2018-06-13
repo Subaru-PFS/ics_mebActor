@@ -90,6 +90,7 @@ uint32_t prevMillis = millis();
 char oid[SNMP_MAX_OID_LEN];
 SNMP_API_STAT_CODES api_status;
 SNMP_ERR_CODES status;
+volatile uint32_t flowTrigger[2];
 
 void pduReceived()
 {
@@ -294,6 +295,19 @@ void pduReceived()
 
 double getFlow()
 {
+  uint32_t now = millis();
+  if (flowTrigger[0] == 0 || flowTrigger[1] == 0) {
+    return 0.0;
+  } else if (now - flowTrigger[1] >= 10000) {
+    return 0.0;
+  } else {
+    return 1000.0 / (flowTrigger[1] - flowTrigger[0]);
+  }
+}
+
+/*
+double getFlow()
+{
   unsigned long t_in, t_low;
   int i;
 
@@ -309,6 +323,7 @@ double getFlow()
     return 1000000.0 * SAMPLES / (t_low * FLOW_RATIO);
   }
 }
+*/
 
 void doFlow()
 {
@@ -365,6 +380,10 @@ void setup()
   //
   pinMode(flowPin, INPUT);
   //
+  flowTrigger[0] = 0;
+  flowTrigger[1] = 0;
+  attachInterrupt(digitalPinToInterrupt(flowPin), trigger, FALLING);
+  //
   api_status = Agentuino.begin();
   //
   if ( api_status == SNMP_API_STAT_SUCCESS ) {
@@ -374,6 +393,12 @@ void setup()
   } else {
     DPRINTLN("Failed to start SNMP server");
   }
+}
+
+void trigger()
+{
+  flowTrigger[0] = flowTrigger[1];
+  flowTrigger[1] = millis();
 }
 
 void loop()
