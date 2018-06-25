@@ -34,6 +34,20 @@ class flow(object):
             'FlowMeter': float(res[2]),
         }
 
+    def shutterQuery(self):
+        """ Read data from Arduino board """
+
+        tn = telnetlib.Telnet(self.host)
+        tn.write(b'S\r')
+        data = tn.read_until(b':', TIME_OUT)
+        tn.close()
+        res = data.decode('latin-1').split()
+        return {
+            'Shutter': int(res[2]),
+            'LastOpen': int(res[7]),
+            'LastClose': int(res[8]),
+        }
+
     def raw(self, cmdStr):
         """ Send an arbitrary command URL to the controller. """
 

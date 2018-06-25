@@ -40,8 +40,11 @@ String g_strcmd = "";
 unsigned long last_active;
 
 int flowPin = 2;
+int shutterPin = 3;
 volatile uint32_t flowLastTrigger = 0;
 volatile uint32_t flowPeriod = 0;
+volatile uint32_t shutterLastOn = 0;
+volatile uint32_t shutterLastOff = 0;
 
 #define TELNET_TIMEOUT 15000
 #define SAMPLES 1
@@ -336,11 +339,33 @@ void doFlow()
   g_client.write(str);
 }
 
+void doShutter()
+{
+  char str[64];
+  int shutter;
+  uint32_t now, diff1, diff2;
+
+  shutter = digitalRead(shutterPin);
+  now = millis();
+  if(shutterLastOn > 0)
+    diff1 = now - shutterLastOn;
+  else
+    diff1 = 0;
+  if(shutterLastOff > 0)
+    diff2 = now - shutterLastOff;
+  else
+    diff2 = 0;
+  sprintf(str, "Shutter = %d : Last Open/Close = %lu %lu ms ago\n", shutter, diff1, diff2);
+  g_client.write(str);
+}
+
 void parsing()
 {
   char str[30];
   if(g_strcmd == "Q") {
     doFlow();
+  } else if(g_strcmd == "S") {
+    doShutter();
   } else if (g_strcmd == "RST") {
     // command to test reset function
     delay(15000);
@@ -381,6 +406,10 @@ void setup()
   pinMode(flowPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(flowPin), trigger, FALLING);
   //
+  pinMode(shutterPin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(shutterPin), shutterOn, RISING);
+  attachInterrupt(digitalPinToInterrupt(shutterPin), shutterOff, FALLING);
+  //
   api_status = Agentuino.begin();
   //
   if ( api_status == SNMP_API_STAT_SUCCESS ) {
@@ -399,6 +428,16 @@ void trigger()
   now = millis();
   flowPeriod = now - flowLastTrigger;
   flowLastTrigger = now;
+}
+
+void shutterOn()
+{
+  shutterLastOn = millis();
+}
+
+void shutterOff()
+{
+  shutterLastOff = millis();
 }
 
 void loop()

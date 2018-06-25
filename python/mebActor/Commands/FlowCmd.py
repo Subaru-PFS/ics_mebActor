@@ -16,6 +16,7 @@ class FlowCmd(object):
         #
         self.vocab = [
             ('flow', 'status', self.status),
+            ('shutter', 'status', self.shutterStatus),
         ]
 
         # Define typed command arguments for the above commands.
@@ -33,6 +34,15 @@ class FlowCmd(object):
         # You need to format this as keywords...
         flow = '%0.2f' % status['FlowMeter']
         cmd.inform('flow=%s' % (flow))
+
+        if doFinish:
+            cmd.finish()
+
+    def shutterStatus(self, cmd, doFinish=True):
+        """Report flow meter status."""
+
+        status = self.flowDev.shutterQuery()
+        cmd.inform('shutter=%d,%d,%d' % (status['Shutter'], status['LastOpen'], status['LastClose']))
 
         if doFinish:
             cmd.finish()
