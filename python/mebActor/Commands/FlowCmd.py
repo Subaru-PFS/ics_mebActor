@@ -42,7 +42,8 @@ class FlowCmd(object):
         """Report flow meter status."""
 
         status = self.flowDev.shutterQuery()
-        cmd.inform('shutter=%d,%d,%d' % (status['Shutter'], status['LastOpen'], status['LastClose']))
+        shutter = '%d,%d,%d' % (status['Shutter'], status['LastOpen'], status['LastClose'])
+        cmd.inform('shutter=%s' % (shutter))
 
         if doFinish:
             cmd.finish()

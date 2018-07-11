@@ -340,7 +340,7 @@ void doShutter()
     lastOn = now - lastOn;
   if(lastOff > 0)
     lastOff = now - lastOff;
-  sprintf(str, "Shutter = %d : Last Open/Close = %lu %lu ms ago\n", shutter, lastOn, lastOff);
+  sprintf(str, "Shutter = %d , Last Open/Close = %lu %lu ms ago\n", shutter, lastOn, lastOff);
   g_client.write(str);
 }
 

@@ -121,7 +121,7 @@ There are two ways to read the data:
   Flow = 0 Hz
   # S for shutter status, 0/1 = Close/Open
   :S
-  Shutter = 0 : Last Open/Close = 4823 3821 ms ago
+  Shutter = 0 , Last Open/Close = 4823 3821 ms ago
   :X
   unknown
 
