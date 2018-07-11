@@ -28,8 +28,8 @@
 #include <avr/wdt.h>
 
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x0F, 0x87, 0x07 };
-// IPAddress ip(10, 1, 164, 210);
-IPAddress ip(133, 40, 164, 209);
+IPAddress ip(10, 1, 164, 210);
+//IPAddress ip(133, 40, 164, 209);
 
 // telnet defaults to port 23
 
@@ -43,8 +43,8 @@ int flowPin = 2;
 int shutterPin = 3;
 volatile uint32_t flowLastTrigger = 0;
 volatile uint32_t flowPeriod = 0;
-volatile uint32_t shutterLastOn = 0;
-volatile uint32_t shutterLastOff = 0;
+volatile uint32_t shutterT1 = 0;
+volatile uint32_t shutterT2 = 0;
 
 #define TELNET_TIMEOUT 15000
 #define SAMPLES 1
@@ -308,26 +308,6 @@ double getFlow()
   }
 }
 
-/*
-double getFlow()
-{
-  unsigned long t_in, t_low;
-  int i;
-
-  t_low = 0;
-  for (i=0; i<SAMPLES; i++) {
-    t_in = pulseIn(flowPin, LOW, FLOW_TIMEOUT);
-    if (t_in == 0) break;
-    t_low += t_in;
-  }
-  if (i < SAMPLES) {
-    return 0.0;
-  } else {
-    return 1000000.0 * SAMPLES / (t_low * FLOW_RATIO);
-  }
-}
-*/
-
 void doFlow()
 {
   char str[30], hzstr[16];
@@ -343,19 +323,24 @@ void doShutter()
 {
   char str[64];
   int shutter;
-  uint32_t now, diff1, diff2;
+  uint32_t now, lastOn, lastOff;
 
+  noInterrupts();
   shutter = digitalRead(shutterPin);
+  if(shutter > 0) {
+    lastOn = shutterT2;
+    lastOff = shutterT1;
+  } else {
+    lastOn = shutterT1;
+    lastOff = shutterT2;
+  }
+  interrupts();
   now = millis();
-  if(shutterLastOn > 0)
-    diff1 = now - shutterLastOn;
-  else
-    diff1 = 0;
-  if(shutterLastOff > 0)
-    diff2 = now - shutterLastOff;
-  else
-    diff2 = 0;
-  sprintf(str, "Shutter = %d : Last Open/Close = %lu %lu ms ago\n", shutter, diff1, diff2);
+  if(lastOn > 0)
+    lastOn = now - lastOn;
+  if(lastOff > 0)
+    lastOff = now - lastOff;
+  sprintf(str, "Shutter = %d : Last Open/Close = %lu %lu ms ago\n", shutter, lastOn, lastOff);
   g_client.write(str);
 }
 
@@ -407,9 +392,8 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(flowPin), trigger, FALLING);
   //
   pinMode(shutterPin, INPUT);
-  attachInterrupt(digitalPinToInterrupt(shutterPin), shutterOn, RISING);
-  attachInterrupt(digitalPinToInterrupt(shutterPin), shutterOff, FALLING);
-  //
+  attachInterrupt(digitalPinToInterrupt(shutterPin), shutterChange, CHANGE);
+   //
   api_status = Agentuino.begin();
   //
   if ( api_status == SNMP_API_STAT_SUCCESS ) {
@@ -430,14 +414,10 @@ void trigger()
   flowLastTrigger = now;
 }
 
-void shutterOn()
+void shutterChange()
 {
-  shutterLastOn = millis();
-}
-
-void shutterOff()
-{
-  shutterLastOff = millis();
+  shutterT1 = shutterT2;
+  shutterT2 = millis();
 }
 
 void loop()
