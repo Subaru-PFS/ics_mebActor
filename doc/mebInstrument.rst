@@ -103,7 +103,7 @@ System return:
 Arduino ethernet board
 ----------------------
 
-This board collect the data from flow meter. We can program it to use DHCP or static IP.
+This board collect the data from flow meter and monitor shutter status. We can program it to use DHCP or static IP.
 
 :IP: 133.40.164.209
 :MAC: 90:a2:da:0f:87:07
@@ -111,13 +111,17 @@ This board collect the data from flow meter. We can program it to use DHCP or st
 There are two ways to read the data:
 
 **Telnet protocol**
-  Only support ‘Q’ command for query.
+  Support ‘Q’ command for flow meter and 'S' command for shutter.
 
 ::
 
   > telnet 133.40.164.209
+  # Q for flow meter status, 0 Hz means there is no pulse in last 10s
   :Q
   Flow = 0 Hz
+  # S for shutter status, 0/1 = Close/Open
+  :S
+  Shutter = 0 : Last Open/Close = 4823 3821 ms ago
   :X
   unknown
 

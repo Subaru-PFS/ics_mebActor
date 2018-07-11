@@ -53,6 +53,8 @@ Flow meter(controller=flow)
 
 meb flow status
     Report flow meter status.
+meb shutter status
+    Report shutter status.
 
 
 Actor keywords
@@ -124,3 +126,16 @@ Turn off power for Metrology camera
 ::
 
   meb power off mc
+
+Query flow meter
+
+::
+
+  meb flow status
+
+Query shutter status
+
+::
+
+  meb shutter status
+

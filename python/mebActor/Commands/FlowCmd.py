@@ -20,7 +20,7 @@ class FlowCmd(object):
         ]
 
         # Define typed command arguments for the above commands.
-        self.keys = keys.KeysDictionary("meb_flow", (1, 1),
+        self.keys = keys.KeysDictionary("meb_flow", (1, 2),
                                         )
     @property
     def flowDev(self):
