@@ -26,10 +26,15 @@ class flow(object):
         """ Read data from Arduino board """
 
         tn = telnetlib.Telnet(self.host)
-        tn.write(b'Q\r')
+        req = b'Q\r'
+        self.logger.info('sent: %s', req)
+        tn.write(req)
         data = tn.read_until(b':', TIME_OUT)
         tn.close()
+        self.logger.info('recv: %s', data)
         res = data.decode('latin-1').split()
+        if len(res) != 5:
+            raise RuntimeError('Receiving invalid response')
         return {
             'FlowMeter': float(res[2]),
         }
@@ -38,10 +43,15 @@ class flow(object):
         """ Read data from Arduino board """
 
         tn = telnetlib.Telnet(self.host)
-        tn.write(b'S\r')
+        req = b'S\r'
+        self.logger.info('sent: %s', req)
+        tn.write(req)
         data = tn.read_until(b':', TIME_OUT)
         tn.close()
+        self.logger.info('recv: %s', data)
         res = data.decode('latin-1').split()
+        if len(res) != 12:
+            raise RuntimeError('Receiving invalid response')
         return {
             'Shutter': int(res[2]),
             'LastOpen': int(res[7]),

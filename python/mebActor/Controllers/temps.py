@@ -21,7 +21,7 @@ class temps(object):
             port = int(self.actor.config.get(self.name, 'port'))
         self.host = host
         self.port = port
-        self.logger.warn('host,port: %s,%d', self.host, self.port)        
+        self.logger.warn('host,port: %s,%d', self.host, self.port)
 
     def query(self):
         """ Read data from Adam 6015 modules """
@@ -36,8 +36,7 @@ class temps(object):
         s.close()
 
         if data[:9] != b'\x00\xef\x00\x00\x00\x11\x01\x04\x0e':
-            print("Receiving invalid data")
-            exit()
+            raise RuntimeError('Receiving invalid response')
         data = data.decode('latin-1')
 
         temp = [0.0] * 7
@@ -57,4 +56,3 @@ class temps(object):
 
     def stop(self, cmd=None):
         pass
-
