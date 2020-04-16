@@ -47,9 +47,6 @@ volatile uint32_t shutterT1 = 0;
 volatile uint32_t shutterT2 = 0;
 
 #define TELNET_TIMEOUT 15000
-#define SAMPLES 1
-#define FLOW_TIMEOUT 3000000
-#define FLOW_RATIO 1.08      // Rough estimation for T_period / T_low
 
 //
 // tkmib - linux mib browser
@@ -399,10 +396,10 @@ void setup()
   if ( api_status == SNMP_API_STAT_SUCCESS ) {
     Agentuino.onPduReceive(pduReceived);
     delay(10);
-    wdt_enable(WDTO_8S);
   } else {
     DPRINTLN("Failed to start SNMP server");
   }
+  wdt_enable(WDTO_8S);
 }
 
 void trigger()
@@ -473,8 +470,6 @@ void loop()
       last_active = millis();
     }
   }
-
   //
   wdt_reset();
 }
-

@@ -22,6 +22,8 @@ class FlowCmd(object):
         # Define typed command arguments for the above commands.
         self.keys = keys.KeysDictionary("meb_flow", (1, 2),
                                         )
+        self.kFactor = self.actor.config.get('flow', 'kFactor')
+
     @property
     def flowDev(self):
         return self.actor.controllers['flow']
@@ -31,8 +33,11 @@ class FlowCmd(object):
 
         status = self.flowDev.query()
 
+        # convert from Hz to Gal/min
+        speed = status['FlowMeter'] / self.kFactor * 60
+
         # You need to format this as keywords...
-        flow = '%0.2f' % status['FlowMeter']
+        flow = '%0.2f,%0.1f' % (speed, status['FlowMeter'])
         cmd.inform('flow=%s' % (flow))
 
         if doFinish:
