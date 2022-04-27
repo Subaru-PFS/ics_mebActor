@@ -27,13 +27,19 @@ class temps(object):
         """ Read data from Adam 6015 modules """
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((self.host, self.port))
+        s.settimeout(1.0)
+
         req = b'\x00\xef\x00\x00\x00\x06\x01\x04\x00\x00\x00\x07'
         self.logger.info('send: %r', req)
-        s.sendall(req)
-        data = s.recv(23, socket.MSG_WAITALL)
-        self.logger.debug('recv: %r', data)
-        s.close()
+        try:
+            s.connect((self.host, self.port))
+            s.sendall(req)
+            data = s.recv(23, socket.MSG_WAITALL)
+            self.logger.info('recv: %r', data)
+        except socket.timeout:
+            raise RuntimeError('timeout hit when querying temps controller')
+        finally:
+            s.close()
 
         if data[:9] != b'\x00\xef\x00\x00\x00\x11\x01\x04\x0e':
             raise RuntimeError('Receiving invalid response')
